@@ -1,3 +1,5 @@
+// Promise.all Promise.race Promise.resolve Promise.reject
+
 function rand(min, max) {
     min *= 1000;
     max *= 2000;
@@ -7,12 +9,12 @@ function rand(min, max) {
 
 function esperaAi(msg, tempo) {
     return new Promise((resolve, reject) => {
-        if(typeof msg !== 'string') {
-            reject(false)
-            return;
-        }
+        setTimeout(() => {
+            if (typeof msg !== 'string') {
+                reject(new Error("Erro"));
+                return;
+            }
 
-        setTimeout(() => {   
             resolve(msg);
             return;
         }, tempo);
@@ -26,10 +28,10 @@ function esperaAi(msg, tempo) {
 // O promise.all resolve tudo de uma vez, mas se der erro, ele vai aprensentar apenas o erro.
 const promises = [
     // 'Primeiro valor',
-    esperaAi("Promise 1", 3000),
-    esperaAi("Promise 2", 500),
-    esperaAi("Promise 3", 1000),
-    // esperaAi(5555, 1000),
+    esperaAi("Promise 1", rand(1, 5)),
+    esperaAi("Promise 2", rand(1, 5)),
+    esperaAi("Promise 3", rand(1, 5)),
+    // esperaAi(5555, rand(1, 5))
     // "Outro valor"
 ];
 
@@ -41,9 +43,26 @@ const promises = [
 // });
 
 // ELe é como uma corrida, o primeiro que ser executado, ele retorna.
-Promise.race(promises)
-.then(valor => {
-    console.log(valor)
-}).catch(error => {
-    console.log(error)
-});
+// Promise.race(promises)
+//     .then(valor => {
+//         console.log(valor)
+//     }).catch(error => {
+//         console.log(error)
+//     });
+
+function baixaPagina() {
+    const emCache = true
+
+    if(emCache) {
+        return Promise.resolve("Página em cache");
+    } else {
+        return esperaAi("Baixei a página", 3000);
+    }
+
+}
+
+baixaPagina()
+.then(dadosPagina => console.log(dadosPagina))
+.catch(erro => console.log(erro));
+
+
